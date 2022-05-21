@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Actions\AddRepo;
 use App\Jobs\AddRepoJob;
 use App\Jobs\ImportReleasesJob;
 use App\Models\Repo;
@@ -33,18 +34,16 @@ class AddRepoCommand extends Command
         $names = $this->argument('names');
         foreach ($names as $full_name) {
             if (preg_match('@^(.+)/(.+)$@', $full_name, $match)) {
-                [$_, $owner, $name] = $match;
+                $this->task($full_name, function () use ($match){
+                    [$_, $owner, $name] = $match;
+                    $repo = (new AddRepo($owner, $name))->execute();
+                    if ($repo) {
+                        ImportReleasesJob::dispatch($repo);
+                        return true;
+                    }
 
-                if (Repo::whereOwner($owner)->whereName($name)->exists()) {
-                    $this->error("$name already exists");
-
-                    return self::FAILURE;
-                }
-                $this->info("Import job dispatched for $owner/$name");
-                \Bus::chain([
-                    new AddRepoJob($owner, $name),
-                    new ImportReleasesJob($owner, $name),
-                ])->dispatch();
+                    return false;
+                });
             }
         }
 

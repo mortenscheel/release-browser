@@ -38,6 +38,9 @@ class ReleaseRepository
     public function update(Repo $repo, array $data): ?Release
     {
         $params = $this->transformReleaseData($data);
+        if (!$params) {
+            return null;
+        }
         $release = $this->all($repo)->firstWhere('version', $params['version']);
         if ($release) {
             Cache::tags([$repo->full_name])->flush();
@@ -57,13 +60,17 @@ class ReleaseRepository
 
     private function transformReleaseData(array $data): array|null
     {
-        if (Arr::get($data, 'draft')) {
+        if (Arr::get($data, 'draft') || Arr::get($data, 'body') === null) {
             return null;
         }
-        $version = (new VersionParser())->normalize(Arr::get($data, 'tag_name'));
+        $tag = Arr::get($data, 'tag_name');
+        if (!$tag) {
+            \Log::warning('No tag', $data);
+        }
+        $version = (new VersionParser())->normalize($tag);
         $body = Arr::get($data, 'body');
         $github_url = Arr::get($data, 'html_url');
         $published_at = Carbon::parse(Arr::get($data, 'published_at'));
-        return compact('version', 'body', 'github_url', 'published_at');
+        return compact('version', 'tag', 'body', 'github_url', 'published_at');
     }
 }

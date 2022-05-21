@@ -135,6 +135,12 @@ return [
         'settings' => [
             \App\Models\Release::class => [
                 'updateFilterableAttributes' => ['repo_id'],
+                'updateSortableAttributes' => ['published_at'],
+                'updateSearchableAttributes' => ['version', 'body'],
+            ],
+            \App\Models\Repo::class => [
+                'updateSortableAttributes' => ['full_name', 'stars', 'published_at'],
+                'updateSearchableAttributes' => ['full_anem', 'description'],
             ]
         ]
     ],

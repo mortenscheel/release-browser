@@ -20,8 +20,7 @@ class ImportReleasesJob implements ShouldQueue
      * @return void
      */
     public function __construct(
-        protected string $owner,
-        protected string $name
+        protected Repo $repo
     ) {
     }
 
@@ -32,7 +31,6 @@ class ImportReleasesJob implements ShouldQueue
      */
     public function handle()
     {
-        $repo = Repo::whereOwner($this->owner)->whereName($this->name)->firstOrFail();
-        (new ImportReleases($repo))->execute();
+        (new ImportReleases($this->repo))->execute();
     }
 }

@@ -17,6 +17,9 @@ class ReleaseController extends Controller
     public function index(Request $request, string $owner, string $name)
     {
         $repo = $this->repos->find($owner, $name);
+        if (!$repo) {
+            abort(404);
+        }
         if ($search = $request->get('search')) {
             $query = Release::search($search)->where('repo_id', $repo->id);
         } else {

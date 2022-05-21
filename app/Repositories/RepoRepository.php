@@ -15,7 +15,7 @@ class RepoRepository
     public function all(): Collection
     {
         return \Cache::tags(['repos'])->rememberForever('all', function () {
-           return Repo::with('latestRelease')->withCount('releases')->orderBy('owner')->orderBy('name')->get();
+           return Repo::with('latestRelease')->withCount('releases')->orderBy('owner')->orderBy('stars', 'desc')->get();
         });
     }
 
@@ -28,18 +28,22 @@ class RepoRepository
         return $this->all()->filter(fn(Repo $repo) => $repo->owner === $owner);
     }
 
-    public function find(string $owner, string $name = null): Repo
+    public function find(string $owner, string $name = null): ?Repo
     {
         if ($name) {
-            return $this->all()->where('owner', $owner)->where('name', $name)->firstOrFail();
+            return $this->all()->where('owner', $owner)->where('name', $name)->first();
         }
-        return $this->all()->where('full_name', $owner)->firstOrFail();
+        return $this->all()->where('full_name', $owner)->first();
     }
 
-    public function create(array $data): Repo
+    public function create(array $data): ?Repo
     {
+        $params = $this->transformRepoData($data);
+        if (Repo::whereOwner($params['owner'])->whereName($params['name'])->exists()) {
+            return null;
+        }
         \Cache::tags(['repos'])->flush();
-        return Repo::create($this->transformRepoData($data));
+        return Repo::create($params);
     }
 
     public function update(Repo $repo, array $data): Repo
@@ -61,7 +65,7 @@ class RepoRepository
             'description'      => Arr::get($data, 'description'),
             'homepage_url'     => Arr::get($data, 'homepage'),
             'language'         => Arr::get($data, 'language'),
-            'owner_avatar_url' => Arr::get($data, 'organization.avatar_url'),
+            'owner_avatar_url' => Arr::get($data, 'organization.avatar_url', Arr::get($data, 'owner.avatar_url')),
             'stars'            => Arr::get($data, 'stargazers_count'),
         ];
     }

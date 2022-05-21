@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('repo_id')->constrained()->cascadeOnDelete();
             $table->string('version')->index();
+            $table->string('tag');
             $table->text('body');
             $table->string('github_url');
             $table->timestamp('published_at');

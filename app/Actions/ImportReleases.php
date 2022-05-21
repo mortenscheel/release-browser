@@ -13,10 +13,8 @@ class ImportReleases
 
     public function execute(): void
     {
-        \Log::debug('starting');
         $releases = app(ReleaseRepository::class);
         $response = (new FetchReleases($this->repo))->execute();
-        \Log::debug(count($response) . ' releases');
         if (empty($response)) {
             $this->repo->delete();
         } else {

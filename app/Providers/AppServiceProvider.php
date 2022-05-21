@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Models\Release;
 use Illuminate\Support\ServiceProvider;
 use MeiliSearch\Client;
 use MeiliSearch\MeiliSearch;
@@ -26,6 +25,27 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Release::updateMeiliConfig();
+        if (class_exists(MeiliSearch::class)) {
+            $client = app(Client::class);
+            $config = config('scout.meilisearch.settings');
+            collect($config)
+                ->each(function ($settings, $class) use ($client) {
+                    $model = new $class;
+                    $index = $client->index($model->searchableAs());
+                    collect($settings)
+                        ->each(function ($params, $method) use ($index) {
+                            $index->{$method}($params);
+                        });
+                    // Give higher ranking to sort
+                    $index->updateRankingRules([
+                        'words',
+                        'sort',
+                        'typo',
+                        'proximity',
+                        'attribute',
+                        'exactness',
+                    ]);
+                });
+        }
     }
 }

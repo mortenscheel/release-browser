@@ -13,11 +13,12 @@ class AddRepo
     ) {
     }
 
-    public function execute(): void
+    public function execute(): ?Repo
     {
         if (Repo::whereOwner($this->owner)->whereName($this->name)->doesntExist()) {
             $data = (new FetchRepo($this->owner, $this->name))->execute();
-            app(RepoRepository::class)->create($data);
+            return app(RepoRepository::class)->create($data);
         }
+        return null;
     }
 }
