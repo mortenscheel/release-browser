@@ -13,6 +13,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [\App\Http\Controllers\RepoController::class, 'index'])->name('repo.index');
+Route::get('/{owner}', [\App\Http\Controllers\RepoController::class, 'owner'])->name('repo.owner');
+Route::get('/{owner}/{repository}', [\App\Http\Controllers\ReleaseController::class, 'index'])->name('release.index');
