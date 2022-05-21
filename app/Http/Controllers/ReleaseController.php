@@ -2,21 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Repo;
+use App\Models\Release;
+use App\Repositories\RepoRepository;
+use Illuminate\Http\Request;
+use MeiliSearch\Endpoints\Indexes;
 
 class ReleaseController extends Controller
 {
-    public function index(string $owner, string $repository)
-    {
-        $repo = Repo::whereOwner($owner)
-            ->whereRepository($repository)
-            ->with([
-                'releases' => function($query) {
-                    $query->orderBy('version', 'desc');
-                },
-            ])
-            ->firstOrFail();
+    public function __construct(
+        protected RepoRepository $repos,
+    ) {
+    }
 
-        return view('release.index', compact('repo'));
+    public function index(Request $request, string $owner, string $name)
+    {
+        $repo = $this->repos->find($owner, $name);
+        if ($search = $request->get('search')) {
+            $query = Release::search($search)->where('repo_id', $repo->id);
+        } else {
+            $query = $repo->releases();
+        }
+        $releases = $query->orderBy('version', 'desc')->paginate(5);
+
+        return view('release.index', compact('repo', 'releases'));
     }
 }

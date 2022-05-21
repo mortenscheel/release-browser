@@ -2,7 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Release;
 use Illuminate\Support\ServiceProvider;
+use MeiliSearch\Client;
+use MeiliSearch\MeiliSearch;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -13,7 +16,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+
     }
 
     /**
@@ -23,6 +26,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Release::updateMeiliConfig();
     }
 }

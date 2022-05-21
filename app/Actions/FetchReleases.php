@@ -22,7 +22,7 @@ class FetchReleases
     {
         return $this->pager->fetchAll($this->github->repo()->releases(), 'all', [
             $this->repo->owner,
-            $this->repo->repository,
+            $this->repo->name,
         ]);
     }
 }

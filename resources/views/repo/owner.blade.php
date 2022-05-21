@@ -1,8 +1,18 @@
-@extends('temp-layout')
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            <a href="{{ route('repo.index') }}">Home</a> >
+            {{ $owner }}
+        </h2>
+    </x-slot>
 
-@section('content')
-        <h4>{{ $owner }}</h4>
-        @foreach($repos as $repo)
-            <div><a href="{{ route('release.index', [$repo->owner, $repo->repository]) }}">{{ $repo->name }}</a></div>
-        @endforeach
-@endsection
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+                @foreach($repos as $repo)
+                    <div><a href="{{ route('release.index', [$repo->owner, $repo->name]) }}">{{ $repo->full_name }}</a></div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+</x-app-layout>

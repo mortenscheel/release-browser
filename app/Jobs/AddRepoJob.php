@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Actions\UpdateRepo;
+use App\Actions\AddRepo;
 use App\Models\Repo;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -19,8 +19,10 @@ class AddRepoJob implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(protected string $owner, protected string $repository)
-    {
+    public function __construct(
+        protected string $owner,
+        protected string $name
+    ) {
     }
 
     /**
@@ -30,12 +32,8 @@ class AddRepoJob implements ShouldQueue
      */
     public function handle()
     {
-        if (Repo::whereOwner($this->owner)->whereRepository($this->repository)->doesntExist()) {
-            $repo = Repo::create([
-                'owner'      => $this->owner,
-                'repository' => $this->repository,
-            ]);
-            (new UpdateRepo($repo))->execute();
+        if (Repo::whereOwner($this->owner)->whereName($this->name)->doesntExist()) {
+            (new AddRepo($this->owner, $this->name))->execute();
         }
     }
 }

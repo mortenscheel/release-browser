@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Jobs\AddRepoJob;
+use App\Jobs\ImportReleasesJob;
 use App\Models\Repo;
 use Illuminate\Console\Command;
 
@@ -13,14 +14,14 @@ class AddRepoCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'repo:add {name}';
+    protected $signature = 'repo:add {names*}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Add a repository';
+    protected $description = 'Add a name';
 
     /**
      * Execute the console command.
@@ -29,16 +30,22 @@ class AddRepoCommand extends Command
      */
     public function handle()
     {
-        $name = $this->argument('name');
-        if (preg_match('@^(\w+)/(\w+)$@', $name, $match)) {
-            [$_, $owner, $repository] = $match;
-            if (Repo::whereOwner($owner)->whereRepository($repository)->exists()) {
-                $this->error("$name already exists");
+        $names = $this->argument('names');
+        foreach ($names as $full_name) {
+            if (preg_match('@^(.+)/(.+)$@', $full_name, $match)) {
+                [$_, $owner, $name] = $match;
 
-                return self::FAILURE;
+                if (Repo::whereOwner($owner)->whereName($name)->exists()) {
+                    $this->error("$name already exists");
+
+                    return self::FAILURE;
+                }
+                $this->info("Import job dispatched for $owner/$name");
+                \Bus::chain([
+                    new AddRepoJob($owner, $name),
+                    new ImportReleasesJob($owner, $name),
+                ])->dispatch();
             }
-            $this->info("Job dispatched");
-            AddRepoJob::dispatch($owner, $repository);
         }
 
         return 0;

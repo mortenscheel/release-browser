@@ -105,7 +105,7 @@ return [
 
         'main' => [
             'driver'    => 'illuminate',
-            'connector' => null, // null means use default driver
+            'connector' => 'file', // null means use default driver
             // 'min'       => 43200,
             // 'max'       => 172800
         ],
