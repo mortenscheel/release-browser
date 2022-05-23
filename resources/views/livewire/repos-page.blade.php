@@ -36,4 +36,5 @@
             <x-repo-card :repo="$repo" />
         @endforeach
     </div>
+    <div>{{ $repos->withQueryString()->links() }}</div>
 </div>

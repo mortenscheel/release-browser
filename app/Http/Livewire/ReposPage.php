@@ -13,7 +13,7 @@ class ReposPage extends Component
     public function render()
     {
         if ($this->search === '') {
-            $query = Repo::query()->withCount('releases');
+            $query = Repo::query()->whereHas('latestRelease')->withCount('releases');
         } else {
             $query = Repo::search($this->search)->query(fn($query) => $query->withCount('releases'));
         }

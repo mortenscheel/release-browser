@@ -1,7 +1,7 @@
 @php
     /** @var \App\Models\Repo $repo */
 @endphp
-<div class="bg-white overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-200 sm:rounded-lg py-2 px-4">
+<div class="bg-white overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-200 sm:rounded-lg py-2 px-4">
     <a href="{{ route('release.index', ['owner' => $repo->owner, 'name' => $repo->name]) }}">
         <div class="flex items-center justify-between">
             <x-avatar-label :repo="$repo">
@@ -30,25 +30,4 @@
             </div>
         </div>
     </a>
-
-    {{--    <table class="table-auto w-full">--}}
-    {{--        <tr>--}}
-    {{--            <td class="text-lg">--}}
-    {{--                <a href="{{ route('release.index', ['owner' => $repo->owner, 'name' => $repo->name]) }}"--}}
-    {{--                   class="underline text-blue-600 hover:text-blue-800">--}}
-    {{--                    {{ $repo->full_name }}--}}
-    {{--                </a>--}}
-    {{--            </td>--}}
-    {{--            <td class="text-sm text-gray-600">--}}
-    {{--                {{ $repo->latestRelease->tag }}--}}
-    {{--            </td>--}}
-    {{--            <td class="text-sm text-gray-600" title="{{ $repo->latestRelease->published_at }}">--}}
-    {{--                {{ $repo->latestRelease->published_at->diffForHumans() }}--}}
-    {{--            </td>--}}
-    {{--            <td class="text-sm text-gray-600">--}}
-    {{--                {{ $repo->releases_count }} releases--}}
-    {{--            </td>--}}
-
-    {{--        </tr>--}}
-    {{--    </table>--}}
 </div>
