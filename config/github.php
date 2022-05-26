@@ -105,7 +105,7 @@ return [
 
         'main' => [
             'driver'    => 'illuminate',
-            'connector' => 'file', // null means use default driver
+            'connector' => config('GITHUB_CACHE', 'file'), // null means use default driver
             // 'min'       => 43200,
             // 'max'       => 172800
         ],

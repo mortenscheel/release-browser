@@ -13,3 +13,4 @@ yarn-error.log
 /.idea
 /.vscode
 /app/Console/Commands/AdhocCommand.php
+/supervisord.log
