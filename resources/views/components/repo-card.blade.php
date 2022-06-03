@@ -2,6 +2,15 @@
     /** @var \App\Models\Repo $repo */
 @endphp
 <div class="bg-white overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-200 sm:rounded-lg py-2 px-4">
+    <div class="collapse">
+        <input type="checkbox" />
+        <div class="collapse-title text-xl font-medium">
+            Click me to show/hide content
+        </div>
+        <div class="collapse-content">
+            <p>tabindex="0" attribute is necessary to make the div focusable</p>
+        </div>
+    </div>
     <a href="{{ route('release.index', ['owner' => $repo->owner, 'name' => $repo->name]) }}">
         <div class="flex items-center justify-between">
             <x-avatar-label :repo="$repo">
@@ -21,7 +30,7 @@
         </div>
         <div class="mt-2 text-gray-600 text-sm flex items-center justify-between">
             <div>
-                Latest version: {{ $repo->latestRelease->tag }}
+                Latest release: {{ $repo->latestRelease->tag }}
                 <span title="{{ $repo->latestRelease->published_at }}">({{ $repo->latestRelease->published_at->diffForHumans() }})</span>
             </div>
             <div>{{ $repo->releases_count }} releases</div>

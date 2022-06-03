@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 use MeiliSearch\Client;
 use MeiliSearch\MeiliSearch;
@@ -15,7 +16,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-
+        Model::preventLazyLoading(app()->environment('local'));
     }
 
     /**

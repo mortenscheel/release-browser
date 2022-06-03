@@ -13,9 +13,9 @@ class ReposPage extends Component
     public function render()
     {
         if ($this->search === '') {
-            $query = Repo::query()->whereHas('latestRelease')->withCount('releases');
+            $query = Repo::query()->whereHas('latestRelease')->with('latestRelease')->withCount('releases');
         } else {
-            $query = Repo::search($this->search)->query(fn($query) => $query->withCount('releases'));
+            $query = Repo::search($this->search)->query(fn($query) => $query->whereHas('latestRelease')->with('latestRelease')->withCount('releases'));
         }
         $repos = $query
             ->when($this->order === 'name', fn($query) => $query->orderBy('full_name'))

@@ -4,6 +4,12 @@
             <div class="text-2xl">
                 <a href="{{ $repo->github_url }}" target="_blank">{{ $repo->full_name }}</a>
             </div>
+            <select wire:model="major" class="form-select py-1 pr-8">
+                <option value="">All</option>
+                @foreach($repo->majors as $major_version)
+                    <option value="{{ $major_version }}">v{{ $major_version }}</option>
+                @endforeach
+            </select>
         </x-avatar-label>
         <div class="flex items-center gap-2">
             <div class="text-sm text-gray-400">

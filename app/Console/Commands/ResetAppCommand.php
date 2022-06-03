@@ -13,7 +13,7 @@ class ResetAppCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'app:reset {--redis}';
+    protected $signature = 'app:reset';
 
     /**
      * The console command description.
@@ -30,10 +30,7 @@ class ResetAppCommand extends Command
     public function handle()
     {
         $this->task('Reset DB', fn() => Artisan::call('migrate:fresh --seed'));
-        // $this->task('Reset Meilisearch', fn() => app(Client::class)->deleteAllIndexes());
-        if ($this->option('redis')) {
-            $this->task('Reset Redis', fn() => RedisDB::client()->flushAll());
-        }
+        $this->task('Reset Redis', fn() => RedisDB::client()->flushAll());
         return 0;
     }
 }
