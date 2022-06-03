@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use Artisan;
 use Illuminate\Console\Command;
-use MeiliSearch\Client;
 use RedisDB;
 
 class ResetAppCommand extends Command
@@ -31,7 +30,7 @@ class ResetAppCommand extends Command
     public function handle()
     {
         $this->task('Reset DB', fn() => Artisan::call('migrate:fresh --seed'));
-        $this->task('Reset Meilisearch', fn() => app(Client::class)->deleteAllIndexes());
+        // $this->task('Reset Meilisearch', fn() => app(Client::class)->deleteAllIndexes());
         if ($this->option('redis')) {
             $this->task('Reset Redis', fn() => RedisDB::client()->flushAll());
         }

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('owner')->index();
             $table->string('name')->index();
             $table->string('full_name')->index();
-            $table->string('description')->nullable();
+            $table->string('description')->nullable()->fulltext();
             $table->string('github_url');
             $table->string('homepage_url')->nullable();
             $table->string('owner_avatar_url')->nullable();

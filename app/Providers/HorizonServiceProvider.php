@@ -43,7 +43,7 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
     protected function authorization()
     {
         Horizon::auth(function () {
-            return !config('horizon.auth');
+            return $this->app->environment('local') || !config('horizon.auth');
         });
     }
 }
