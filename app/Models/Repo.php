@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Query\Builder;
 use Laravel\Scout\Searchable;
 
 class Repo extends Model
@@ -15,7 +15,7 @@ class Repo extends Model
     use HasFactory, Searchable;
 
     protected $guarded = ['id'];
-    protected $casts = ['published_at' => 'datetime', 'major_versions' => 'collection'];
+    protected $casts = ['published_at' => 'datetime'];
 
     public function releases(): HasMany
     {
@@ -54,7 +54,13 @@ class Repo extends Model
     public function majors(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->releases()->toBase()->select('major')->distinct()->get()->map(fn($row) => $row->major)
+            get: function() {
+                return $this->releases()->orderByVersion('desc')->groupBy('major')
+                    ->selectRaw("CONCAT('v', major) AS label")
+                    ->selectRaw("MIN(tag) AS oldest")
+                    ->selectRaw("MAX(tag) AS newest")
+                    ->toBase()->get()->mapWithKeys(fn($row) => [$row->label => $row]);
+            }
         )->shouldCache();
     }
 }

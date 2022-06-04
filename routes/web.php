@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Livewire;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,5 +22,5 @@ Route::middleware([
         return view('dashboard');
     })->name('dashboard');
 });
-Route::get('/', [\App\Http\Controllers\RepoController::class, 'index'])->name('repo.index');
-Route::get('/{owner}/{name}', [\App\Http\Controllers\ReleaseController::class, 'index'])->name('release.index');
+Route::get('/', Livewire\ReposPage::class)->name('repo.index');
+Route::get('/{owner}/{name}/{from?}/{to?}', Livewire\ReleasesPage::class)->name('release.index');

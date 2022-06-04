@@ -19,6 +19,7 @@
         "laravel/tinker": "^2.7",
         "livewire/livewire": "^2.5",
         "meilisearch/meilisearch-php": "^0.23.2",
+        "mortenscheel/laravel-macros": "dev-laravel-9",
         "nunomaduro/laravel-console-task": "^1.7"
     },
     "require-dev": {

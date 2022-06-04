@@ -15,17 +15,11 @@ class ImportReleases
     {
         $releases = app(ReleaseRepository::class);
         $response = (new FetchReleases($this->repo))->execute();
-        if (empty($response)) {
+        foreach ($response as $data) {
+            $releases->updateOrCreate($this->repo, $data);
+        }
+        if ($this->repo->releases()->doesntExist()) {
             $this->repo->delete();
-        } else {
-            \File::ensureDirectoryExists($this->repo->getStoragePath('/releases'));
-            foreach ($response as $data) {
-                $releases->updateOrCreate($this->repo, $data);
-                \File::put(
-                    $this->repo->getStoragePath(sprintf('/releases/%d.json', $data['id'])),
-                    json_encode($data, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT|JSON_THROW_ON_ERROR)
-                );
-            }
         }
     }
 }

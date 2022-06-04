@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Composer\Semver\VersionParser;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 use MeiliSearch\Client;
@@ -17,6 +18,12 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         Model::preventLazyLoading(app()->environment('local'));
+        \Str::macro('normalizeVersion', function ($version) {
+            if (!$version) {
+                return $version;
+            }
+            return (new VersionParser())->normalize($version);
+        });
     }
 
     /**

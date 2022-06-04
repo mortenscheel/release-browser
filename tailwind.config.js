@@ -7,6 +7,14 @@ module.exports = {
         './storage/framework/views/*.php',
         './resources/views/**/*.blade.php',
     ],
+    safelist: [
+        {
+            pattern: /fill-(\w+)-600/ // loading spinner colors
+        },
+        {
+            pattern: /^(h|w)-(\d+)/ // heights/widths
+        },
+    ],
 
     theme: {
         extend: {

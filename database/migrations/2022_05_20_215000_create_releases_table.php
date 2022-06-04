@@ -17,7 +17,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('repo_id')->constrained()->cascadeOnDelete();
             $table->string('version')->index();
-            $table->string('major')->virtualAs("SUBSTRING(version, 1, LOCATE('.', version) - 1)")->index();
+            $table->unsignedTinyInteger('major')->virtualAs("CAST(SUBSTRING_INDEX(CONCAT(`version`,'.0'),'.',1) AS UNSIGNED)")->index();
+            $table->unsignedInteger('numeric_version')->virtualAs("INET_ATON(SUBSTRING_INDEX(CONCAT(`version`,'.0.0.0'),'.',4))")->index();
             $table->string('tag');
             $table->text('body')->fulltext();
             $table->string('github_url');

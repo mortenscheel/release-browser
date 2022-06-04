@@ -6,7 +6,6 @@ use App\Models\Release;
 use App\Models\Repo;
 use Cache;
 use Carbon\Carbon;
-use Composer\Semver\VersionParser;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Arr;
 
@@ -67,7 +66,7 @@ class ReleaseRepository
         if (!$tag) {
             \Log::warning('No tag', $data);
         }
-        $version = (new VersionParser())->normalize($tag);
+        $version = \Str::normalizeVersion($tag);
         $body = Arr::get($data, 'body');
         $github_url = Arr::get($data, 'html_url');
         $published_at = Carbon::parse(Arr::get($data, 'published_at'));
