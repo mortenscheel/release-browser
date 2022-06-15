@@ -32,7 +32,11 @@ class SeedReposCommand extends Command
             $this->warn('No repos found in DEFAULT_REPOS');
             return self::FAILURE;
         }
-        \Artisan::call('repo:add', ['names' => $repos], $this->getOutput());
+        try {
+            \Artisan::call('repo:add', ['names' => $repos], $this->getOutput());
+        } catch (\Throwable $th) {
+            $this->error($th->getMessage());
+        }
         return self::SUCCESS;
     }
 }

@@ -20,7 +20,7 @@
                     <input type="radio" class="form-radio" wire:model="order" value="age">
                     <span class="ml-1">Age</span>
                 </label>
-                <x-loading-spinner size="6" />
+{{--                <x-loading-spinner size="6" />--}}
                 <div wire:loading="false">not</div>
             </div>
             <div class="flex items-center gap-2">

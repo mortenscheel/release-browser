@@ -19,10 +19,22 @@ class AppServiceProvider extends ServiceProvider
     {
         Model::preventLazyLoading(app()->environment('local'));
         \Str::macro('normalizeVersion', function ($version) {
+            $version = preg_replace([
+                '/^v\./',
+                '/rc-?\d*$/',
+            ], [
+                'v',
+                '',
+            ], $version);
             if (!$version) {
                 return $version;
             }
-            return (new VersionParser())->normalize($version);
+            try {
+                return (new VersionParser())->normalize($version);
+            } catch (\Throwable $th) {
+                \Log::error("Invalid version string: $version");
+                throw $th;
+            }
         });
     }
 

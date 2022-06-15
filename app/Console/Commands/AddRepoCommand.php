@@ -36,13 +36,17 @@ class AddRepoCommand extends Command
             if (preg_match('@^(.+)/(.+)$@', $full_name, $match)) {
                 $this->task($full_name, function () use ($match){
                     [$_, $owner, $name] = $match;
-                    $repo = (new AddRepo($owner, $name))->execute();
+                    try {
+                        $repo = (new AddRepo($owner, $name))->execute();
                     if ($repo) {
                         ImportReleasesJob::dispatch($repo);
                         return true;
                     }
-
                     return false;
+                    } catch (\Throwable $th) {
+                        $this->error($th->getMessage());
+                        return false;
+                    }
                 });
             }
         }
