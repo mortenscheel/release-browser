@@ -4,6 +4,7 @@ namespace App\Actions;
 
 use App\Models\Repo;
 use App\Repositories\ReleaseRepository;
+use Log;
 
 class ImportReleases
 {
@@ -13,6 +14,7 @@ class ImportReleases
 
     public function execute(): void
     {
+        Log::info('Import releases started', ['repo' => $this->repo->full_name]);
         $releases = app(ReleaseRepository::class);
         $response = (new FetchReleases($this->repo))->execute();
         foreach ($response as $data) {
@@ -21,5 +23,6 @@ class ImportReleases
         if ($this->repo->releases()->doesntExist()) {
             $this->repo->delete();
         }
+        Log::info('Import releases ended', ['repo' => $this->repo->full_name]);
     }
 }

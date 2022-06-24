@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Actions\ImportReleases;
 use App\Actions\UpdateRepo;
+use App\Jobs\ImportReleasesJob;
 use App\Models\Repo;
 use Illuminate\Console\Command;
 use App\Actions\UpdateAllRepos;
@@ -32,8 +33,9 @@ class UpdateRepoCommand extends Command
     public function handle()
     {
         $repo = Repo::whereFullName($this->argument('name'))->firstOrFail();
-        $this->task('Updating repository', fn() => (new UpdateRepo($repo))->execute());
-        $this->task('Updating releases', fn() => (new ImportReleases($repo))->execute());
+        // $this->task('Updating repository', fn() => (new UpdateRepo($repo))->execute());
+        // $this->task('Updating releases', fn() => (new ImportReleases($repo))->execute());
+        ImportReleasesJob::dispatch($repo);
         return 0;
     }
 }
