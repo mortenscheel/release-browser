@@ -39,12 +39,12 @@ class ReleasesPage extends Component
         return view('livewire.releases-page', compact('releases'));
     }
 
-    public function mount(Request $request, string $owner, string $name, string $from = '', string $to = '')
+    public function mount(Request $request, string $owner, string $name, string $from = '', string $to = '', string $search = '')
     {
-        $this->search = $request->get('search', '');
+        $this->search = $search;
         try {
             $this->repo = Repo::whereOwner($owner)->whereName($name)->firstOrFail();
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             session()->flash('error', "Unknown repository: $owner/$name");
             $this->redirect(url()->previous('/'));
         }

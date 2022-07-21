@@ -23,5 +23,6 @@ COPY cron /root/cron
 RUN crontab -u www-data /root/cron
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
+RUN mkdir -p /var/www/.config/psysh && chown -R www-data:www-data /var/www/.config
 
 ENTRYPOINT ["/entrypoint.sh"]

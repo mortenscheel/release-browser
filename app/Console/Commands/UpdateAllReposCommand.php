@@ -2,8 +2,10 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\ImportReleasesJob;
+use App\Jobs\UpdateRepoJob;
+use App\Models\Repo;
 use Illuminate\Console\Command;
-use App\Actions\UpdateAllRepos;
 
 class UpdateAllReposCommand extends Command
 {
@@ -26,9 +28,14 @@ class UpdateAllReposCommand extends Command
      *
      * @return int
      */
-    public function handle()
+    public function handle(): int
     {
-        (new UpdateAllRepos)->execute();
+        Repo::all()->each(function(Repo $repo) {
+            \Bus::chain([
+                new UpdateRepoJob($repo),
+                new ImportReleasesJob($repo)
+            ])->dispatch();
+        });
         return 0;
     }
 }

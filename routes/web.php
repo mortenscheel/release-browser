@@ -23,4 +23,4 @@ Route::middleware([
     })->name('dashboard');
 });
 Route::get('/', Livewire\ReposPage::class)->name('repo.index');
-Route::get('/{owner}/{name}/{from?}/{to?}', Livewire\ReleasesPage::class)->name('release.index');
+Route::get('/{owner}/{name}/{from?}/{to?}/{search?}', Livewire\ReleasesPage::class)->name('release.index');

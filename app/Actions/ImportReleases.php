@@ -14,7 +14,6 @@ class ImportReleases
 
     public function execute(): void
     {
-        Log::info('Import releases started', ['repo' => $this->repo->full_name]);
         $releases = app(ReleaseRepository::class);
         $response = (new FetchReleases($this->repo))->execute();
         foreach ($response as $data) {
@@ -23,6 +22,11 @@ class ImportReleases
         if ($this->repo->releases()->doesntExist()) {
             $this->repo->delete();
         }
-        Log::info('Import releases ended', ['repo' => $this->repo->full_name]);
+        Log::info('Releases imported', ['repo' => $this->repo->full_name]);
+    }
+
+    public static function make(Repo $repo): ImportReleases
+    {
+        return new self($repo);
     }
 }

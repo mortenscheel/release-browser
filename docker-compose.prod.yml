@@ -6,6 +6,8 @@ services:
             context: ./docker/prod/php
         extra_hosts:
             - 'host.docker.internal:host-gateway'
+        restart: 'always'
+        container_name: 'app'
         volumes:
             - '.:/var/www/html'
         ports:
@@ -16,9 +18,10 @@ services:
         depends_on:
             - mysql
             - redis
-            - meilisearch
     mysql:
         image: 'mysql/mysql-server:8.0'
+        restart: 'always'
+        container_name: 'db'
         ports:
             - '${FORWARD_DB_PORT:-3306}:3306'
         environment:
@@ -39,6 +42,8 @@ services:
             timeout: 5s
     redis:
         image: 'redis:alpine'
+        restart: 'always'
+        container_name: 'redis'
         ports:
             - '${FORWARD_REDIS_PORT:-6379}:6379'
         volumes:
@@ -60,6 +65,4 @@ volumes:
     sail-mysql:
         driver: local
     sail-redis:
-        driver: local
-    sail-meilisearch:
         driver: local
